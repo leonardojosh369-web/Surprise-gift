@@ -1,0 +1,339 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Love Letter</title>  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Georgia, serif;
+    }
+
+    body{
+      min-height:100vh;
+      background: linear-gradient(180deg,#0b1026,#1a103a,#2a114a);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      overflow:hidden;
+      color:#3b1f2a;
+    }
+
+    /* STARS */
+    .star{
+      position:fixed;
+      width:3px;
+      height:3px;
+      background:white;
+      border-radius:50%;
+      opacity:0.8;
+      animation: twinkle 2s infinite ease-in-out;
+      z-index:0;
+    }
+
+    @keyframes twinkle{
+      0%,100%{opacity:0.2; transform:scale(1);}
+      50%{opacity:1; transform:scale(1.6);}
+    }
+
+    /* SHOOTING STAR */
+    .shooting-star{
+      position:fixed;
+      top:20vh;
+      left:-10vw;
+      width:120px;
+      height:2px;
+      background: linear-gradient(90deg, white, transparent);
+      transform: rotate(-20deg);
+      z-index:5;
+      animation: shoot 1s linear forwards;
+      box-shadow:0 0 10px white;
+    }
+
+    @keyframes shoot{
+      from{transform:translateX(0) rotate(-20deg); opacity:1;}
+      to{transform:translateX(140vw) rotate(-20deg); opacity:0;}
+    }
+
+    /* PETALS */
+    .petal{
+      position:fixed;
+      top:-10vh;
+      width:14px;
+      height:14px;
+      background: radial-gradient(circle,#ffb6c1,#ff6f91);
+      border-radius:50% 60% 50% 60%;
+      opacity:0.8;
+      animation: fall linear forwards;
+      z-index:1;
+    }
+
+    /* PHOTO FALLING */
+    .photo{
+      position:fixed;
+      top:-15vh;
+      width:70px;
+      height:70px;
+      object-fit:cover;
+      border-radius:16px;
+      border:3px solid rgba(255,255,255,0.7);
+      box-shadow:0 10px 25px rgba(0,0,0,0.25);
+      animation: fall linear forwards;
+      z-index:2;
+    }
+
+    @keyframes fall{
+      to{
+        transform: translateY(120vh) rotate(360deg);
+        opacity:0;
+      }
+    }
+
+    /* ENVELOPE SCREEN */
+    .envelope-screen{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,0.4);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      z-index:10;
+      transition: all 0.8s ease;
+    }
+
+    .envelope-screen.open{
+      opacity:0;
+      transform: scale(1.2);
+      pointer-events:none;
+    }
+
+    .envelope{
+      width:220px;
+      height:140px;
+      background:#fff0f5;
+      position:relative;
+      border-radius:10px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.2);
+      cursor:pointer;
+      animation: float 2s infinite ease-in-out;
+      transition: transform 0.4s ease;
+    }
+
+    .envelope:active{
+      transform: scale(0.95);
+    }
+
+    .envelope-text{
+      position:absolute;
+      bottom:10px;
+      width:100%;
+      text-align:center;
+      font-weight:bold;
+      color:#7a2d4e;
+    }
+
+    @keyframes float{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-10px)}
+    }
+
+    /* LETTER */
+    .letter{
+      width:min(900px,92vw);
+      background:#fffaf7;
+      border-radius:25px;
+      padding:40px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.18);
+      display:none;
+      position:relative;
+      z-index:5;
+      animation: popIn 1s ease;
+    }
+
+    @keyframes popIn{
+      from{opacity:0; transform:scale(0.8) translateY(30px);}
+      to{opacity:1; transform:scale(1) translateY(0);}
+    }
+
+    .header{text-align:center;margin-bottom:20px;}
+    .header h1{color:#7a2d4e;font-size:3rem;}
+
+    .text{
+      font-size:0.95rem;
+      line-height:1.9;
+      min-height:120px;
+      white-space:pre-wrap;
+    }
+
+    .timer{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      margin-top:20px;
+      flex-wrap:wrap;
+    }
+
+    .box{
+      background:#ffe3ec;
+      padding:15px;
+      border-radius:15px;
+      min-width:90px;
+      text-align:center;
+    }
+
+    .btn{
+      margin-top:20px;
+      display:block;
+      padding:12px 25px;
+      border:none;
+      border-radius:30px;
+      background:#7a2d4e;
+      color:white;
+      cursor:pointer;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .hidden{
+      display:none;
+      margin-top:15px;
+      text-align:center;
+    }
+  </style></head>
+<body><audio id="bgMusic" loop>
+  <source src="/storage/emulated/0/DCIM/compil/mosic.mp3" type="audio/mpeg">
+</audio><div class="envelope-screen" id="envelopeScreen" onclick="openEnvelope(this)">
+  <div class="envelope">
+    <div class="envelope-text">Tap to Open 💌</div>
+  </div>
+</div><div class="letter" id="letter">  <div class="header">
+    <h1>Happy 1st Anniversary Babyyy</h1>
+  </div>  <div class="text" id="typewriter"></div>  <div class="timer">
+    <div class="box"><h2 id="days">0</h2><p>Days</p></div>
+    <div class="box"><h2 id="hours">0</h2><p>Hours</p></div>
+    <div class="box"><h2 id="minutes">0</h2><p>Minutes</p></div>
+    <div class="box"><h2 id="seconds">0</h2><p>Seconds</p></div>
+  </div>
+</div>
+  <script>
+const startDate = new Date('2025-05-23T00:00:00');
+let effectsStarted = false;
+
+function update(){
+  const now=new Date();
+  const diff=now-startDate;
+  document.getElementById('days').innerText=Math.floor(diff/86400000);
+  document.getElementById('hours').innerText=Math.floor(diff/3600000)%24;
+  document.getElementById('minutes').innerText=Math.floor(diff/60000)%60;
+  document.getElementById('seconds').innerText=Math.floor(diff/1000)%60;
+}
+setInterval(update,1000);
+update();
+
+function fadeInAudio(audio){
+  audio.volume = 0;
+  audio.play().catch(()=>{});
+  let v = 0;
+  const fade = setInterval(()=>{
+    if(v < 1){
+      v += 0.05;
+      audio.volume = v;
+    } else {
+      clearInterval(fade);
+    }
+  }, 120);
+}
+
+function openEnvelope(el){
+  el.classList.add('open');
+
+  createShootingStar();
+
+  setTimeout(()=>{
+    document.getElementById('envelopeScreen').style.display='none';
+    document.getElementById('letter').style.display='block';
+
+    const music=document.getElementById('bgMusic');
+    fadeInAudio(music);
+
+    typeWriter();
+
+    if(!effectsStarted){
+      effectsStarted=true;
+      setInterval(spawnPetal,250);
+      setInterval(spawnPhoto,900);
+    }
+
+  },700);
+}
+
+function showMsg(){
+  document.getElementById('msg').style.display='block';
+}
+
+const text="From Grade 7 to college, I still can’t believe we’ve stayed in each other’s lives all this time. What started as an “enemies to lovers” story became something real that time and distance couldn’t break. Even with busy college schedules, we still stay connected. We’ve had small fights, but I still choose you, and I’m always here by your side if you need anything. I love you always my baby><";
+let i=0;
+function typeWriter(){
+  if(i<text.length){
+    document.getElementById('typewriter').innerHTML+=text.charAt(i);
+    i++;
+    setTimeout(typeWriter,40);
+  }
+}
+
+// STARS
+for(let i=0;i<80;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  s.style.left=Math.random()*100+'vw';
+  s.style.top=Math.random()*100+'vh';
+  document.body.appendChild(s);
+}
+
+// SHOOTING STAR
+function createShootingStar(){
+  const star=document.createElement('div');
+  star.className='shooting-star';
+  star.style.top=(10+Math.random()*40)+'vh';
+  document.body.appendChild(star);
+  setTimeout(()=>star.remove(),1000);
+}
+
+// PETALS
+function spawnPetal(){
+  const p=document.createElement('div');
+  p.className='petal';
+  p.style.left=Math.random()*100+'vw';
+  p.style.animationDuration=(4+Math.random()*5)+'s';
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(),9000);
+}
+
+// PHOTOS
+const photos=[
+  '/storage/emulated/0/DCIM/compil/photo1.jpg',
+  '/storage/emulated/0/DCIM/compil/photo2.jpg',
+  '/storage/emulated/0/DCIM/compil/photo3.jpg',
+  '/storage/emulated/0/DCIM/compil/photo4.jpg',
+  '/storage/emulated/0/DCIM/compil/photo5.jpg',
+  '/storage/emulated/0/DCIM/compil/photo6.jpg',
+  '/storage/emulated/0/DCIM/compil/photo7.jpg',
+  '/storage/emulated/0/DCIM/compil/photo8.jpg',
+  '/storage/emulated/0/DCIM/compil/photo9.jpg',
+  '/storage/emulated/0/DCIM/compil/photo10.jpeg',
+  '/storage/emulated/0/DCIM/compil/photo11.jpeg',
+  '/storage/emulated/0/DCIM/compil/photo12.jpeg'
+];
+
+function spawnPhoto(){
+  const img=document.createElement('img');
+  img.className='photo';
+  img.src=photos[Math.floor(Math.random()*photos.length)];
+  img.style.left=Math.random()*100+'vw';
+  img.style.animationDuration=(6+Math.random()*6)+'s';
+  document.body.appendChild(img);
+  setTimeout(()=>img.remove(),12000);
+}
+</script></body>
+</html>
